@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Harshss Closet</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+      color: #2c2c54;
+      background-size: 400% 400%;
+      transition: background 0.5s ease;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(120deg, #1e1e2f, #2c2c54);
+      color: #f5f5dc;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 2em 1em;
+      background: linear-gradient(to right, #fc466b, #3f5efb);
+      color: #fff8e1;
+      font-weight: bold;
+      font-size: 1.8em;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px #00000033;
+    }
+
+    .controls {
+      text-align: center;
+      margin: 1em 0;
+    }
+
+    .controls input, .controls select {
+      padding: 0.7em;
+      margin: 0.5em;
+      border-radius: 30px;
+      border: 2px solid #ddd;
+      font-size: 1em;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .toggle-mode {
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      padding: 0.4em 1em;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .categories {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      margin: 1em 0;
+      flex-wrap: wrap;
+    }
+
+    .category {
+      padding: 0.5em 1em;
+      background: #fff8e1;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    .category:hover {
+      background: #fbc2eb;
+    }
+
+    .shop {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2em;
+      padding: 2em;
+    }
+
+    .card {
+      background: #fff5e6;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      text-align: center;
+      padding: 1em;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    h3 {
+      color: #fc466b;
+      font-size: 1.3em;
+    }
+
+    .price {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #3f5efb;
+    }
+
+    .tags {
+      font-size: 0.8em;
+      color: #777;
+    }
+
+    button {
+      margin: 0.5em;
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .add { background: linear-gradient(to right, #36d1dc, #5b86e5); }
+    .buy { background: linear-gradient(to right, #f7971e, #ffd200); color: #222; }
+
+    .pagination {
+      text-align: center;
+      margin: 2em 0;
+    }
+
+    .pagination button {
+      background: #3f5efb;
+      margin: 0.3em;
+      color: white;
+    }
+
+    footer { font-size: 1em; padding: 1em; }
+  </style>
+</head>
+<body>
+
+<header>🛍 Harshini's Fashion Closet ✨</header>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search your style...">
+  <select id="priceFilter">
+    <option value="all">All Prices</option>
+    <option value="low">Under $50</option>
+    <option value="mid">$50-$100</option>
+    <option value="high">Over $100</option>
+  </select>
+  <select id="tagFilter">
+    <option value="all">All Tags</option>
+    <option value="casual">Casual</option>
+    <option value="party">Party</option>
+    <option value="formal">Formal</option>
+  </select>
+  <button class="toggle-mode" onclick="toggleDarkMode()">🌓 Toggle Mode</button>
+</div>
+
+<div class="categories">
+  <div class="category">👗 Dresses</div>
+  <div class="category">👚 Tops</div>
+  <div class="category">👖 Bottoms</div>
+  <div class="category">🧥 Jackets</div>
+  <div class="category">🥿 Footwear</div>
+</div>
+
+<section class="shop" id="shop"></section>
+
+<div class="pagination">
+  <button onclick="prevPage()">⬅ Prev</button>
+  <span id="pageNum">1</span>
+  <button onclick="nextPage()">Next ➡</button>
+</div>
+
+<footer>© 2025 harshssCloset • Color Your Closet 💖</footer>
+
+<script>
+const allItems = [
+  { name: 'Rose Midi', price: 45, tags: ['casual'], img: 'https://source.unsplash.com/featured/?midi,dress' },
+  { name: 'Blazer Top', price: 70, tags: ['formal'], img: 'https://source.unsplash.com/featured/?blazer,woman' },
+  { name: 'Beach Gown', price: 120, tags: ['party'], img: 'https://source.unsplash.com/featured/?gown,fashion' },
+  { name: 'Denim Set', price: 55, tags: ['casual'], img: 'https://source.unsplash.com/featured/?denim,set' },
+  { name: 'Office Skirt', price: 48, tags: ['formal'], img: 'https://source.unsplash.com/featured/?skirt,office' },
+  { name: 'Boho Chic', price: 95, tags: ['party'], img: 'https://source.unsplash.com/featured/?boho,woman' },
+  { name: 'Winter Coat', price: 135, tags: ['formal'], img: 'https://source.unsplash.com/featured/?coat,woman' },
+  { name: 'Casual Tee', price: 30, tags: ['casual'], img: 'https://source.unsplash.com/featured/?casual,tee' }
+];
+
+let currentPage = 1;
+const perPage = 4;
+
+function displayItems() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const price = document.getElementById('priceFilter').value;
+  const tag = document.getElementById('tagFilter').value;
+
+  let filtered = allItems.filter(item =>
+    item.name.toLowerCase().includes(search) &&
+    (tag === 'all' || item.tags.includes(tag)) &&
+    (price === 'all' || (price === 'low' && item.price < 50) ||
+     (price === 'mid' && item.price >= 50 && item.price <= 100) ||
+     (price === 'high' && item.price > 100))
+  );
+
+  const start = (currentPage - 1) * perPage;
+  const end = start + perPage;
+  const pageItems = filtered.slice(start, end);
+
+  document.getElementById('shop').innerHTML = pageItems.map(item => `
+    <div class="card">
+      <img src="${item.img}" alt="${item.name}">
+      <h3>${item.name}</h3>
+      <p class="price">$${item.price}</p>
+      <p class="tags">Tags: ${item.tags.join(', ')}</p>
+      <button class="add">Add</button>
+      <button class="buy">Buy</button>
+    </div>`).join('');
+
+  document.getElementById('pageNum').innerText = currentPage;
+}
+
+function toggleDarkMode() {
+  document.body.classList.toggle('dark-mode');
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    displayItems();
+  }
+}
+
+function nextPage() {
+  currentPage++;
+  displayItems();
+}
+
+['searchInput', 'priceFilter', 'tagFilter'].forEach(id =>
+  document.getElementById(id).addEventListener('input', () => {
+    currentPage = 1;
+    displayItems();
+  })
+);
+
+displayItems();
+</script>
+
+</body>
+</html>
